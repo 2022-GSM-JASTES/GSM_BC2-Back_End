@@ -41,7 +41,7 @@ function eventsHandler(request, response, next) {
     clients.push(newClient);
   
     request.on('close', () => {
-      console.log(clients);
+      console.log(clientId);
       //clients = clients.filter(client => client.id !== clientId);
     });
   }
@@ -57,15 +57,17 @@ async function addLivestreamEvent(request, respsonse, next) {
   console.log(request.body.menu)
   if(request.body.menu == undefined){
     bid1++
-    request.body.bid = bid1
+    request.body.mid = bid1
+    request.body.type = 'mining'
   }else{
     bid2++
     request.body.bid = bid2
+    request.body.type = 'block'
   }
     
     const livestreamEvent = request.body;
     livestreamEvents.push(livestreamEvent);
-    console.log(livestreamEvent)
+    console.log(request.body)
     respsonse.json(livestreamEvent)
     return sendEventsToAll(livestreamEvent);
 }
