@@ -15,7 +15,7 @@ const PORT = 3000;
 let clients = [];
 let livestreamEvents = [];
 
-app.listen(PORT, () => {
+app.listen(PORT,'10.82.20.85', () => {
     console.log(`Livestream service starting`)
 })
 
@@ -46,17 +46,28 @@ function eventsHandler(request, response, next) {
     });
   }
   
-app.get('/events', eventsHandler);
+app.get('/receive', eventsHandler);
 
 function sendEventsToAll(livestreamEvent) {
     clients.forEach(client => client.response.write(`data: ${JSON.stringify(livestreamEvent)}\n\n`))
 }
-
+let bid1 = 1
+let bid2 = 1
 async function addLivestreamEvent(request, respsonse, next) {
+  console.log(request.body.menu)
+  if(request.body.menu == undefined){
+    bid1++
+    request.body.bid = bid1
+  }else{
+    bid2++
+    request.body.bid = bid2
+  }
+    
     const livestreamEvent = request.body;
     livestreamEvents.push(livestreamEvent);
+    console.log(livestreamEvent)
     respsonse.json(livestreamEvent)
     return sendEventsToAll(livestreamEvent);
 }
 
-app.post('/event', addLivestreamEvent);
+app.post('/send', addLivestreamEvent);
